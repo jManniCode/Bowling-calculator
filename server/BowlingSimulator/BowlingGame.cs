@@ -1,12 +1,20 @@
+using System;
+using System.Collections.Generic;
+
 namespace BowlingSimulator
 {
     public class BowlingGame
     {
         private List<int> rolls = new List<int>();
-
+        private Random random = new();
         public void Roll(int pins)
         {
             rolls.Add(pins);
+        }
+
+        public List<int> GetRolls()
+        {
+            return rolls;
         }
 
         public int CalculateScore()
@@ -33,6 +41,49 @@ namespace BowlingSimulator
                 }
             }
             return score;
+        }
+
+        public void SimulateGame()
+        {
+            rolls.Clear();
+
+            for (int round = 0; round < 9; round++)
+            {
+                int firstRoll = random.Next(0, 11);
+
+                if (firstRoll == 10)
+                {
+                    Roll(firstRoll);
+                }
+                else
+                {
+                    int secondRoll = random.Next(0, 11 - firstRoll);
+                    Roll(firstRoll);
+                    Roll(secondRoll);
+                }
+            }
+
+            int lastRoundFirstRoll = random.Next(0, 11);
+            Roll(lastRoundFirstRoll);
+
+            if (lastRoundFirstRoll == 10)
+            {
+                int lastRoundSecondRoll = random.Next(0, 11);
+                Roll(lastRoundSecondRoll);
+                int lastRoundThirdRoll = random.Next(0, 11);
+                Roll(lastRoundThirdRoll);
+            }
+            else
+            {
+                int lastRoundSecondRoll = random.Next(0, 11 - lastRoundFirstRoll);
+                Roll(lastRoundSecondRoll);
+
+                if (lastRoundFirstRoll + lastRoundSecondRoll == 10)
+                {
+                    int lastRoundThirdRoll = random.Next(0, 11);
+                    Roll(lastRoundThirdRoll);
+                }
+            }
         }
     }
 }
