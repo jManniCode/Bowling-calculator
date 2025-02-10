@@ -1,16 +1,55 @@
+*{
+    box-sizing: border-box;
+}
+
+body{
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background-color: black;
+}
+header {
+    text-align: center;
+    width: 100%;
+    border: solid 1px black;
+    background-color: rgb(19, 112, 112);
+
+}
+
 main {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    background-color: rgb(208, 209, 209);
+    
+
 }
 
-header {
+footer{
     text-align: center;
-    width: 100%;
-    border: solid 1px black;
-}
+    background-image: url("https://hejauppsala.com/wp-content/uploads/2023/09/adobestock-266888306-scaled.jpeg");
+    background-position: center;
+    height: 80vh;
+  
 
+    button{
+        margin: 1rem;
+        border-radius: 10px;
+        padding: 5px;
+        min-width: 100px;
+        cursor: pointer;
+        
+    }
+  
+
+    h2{
+        color: white;
+    }
+
+}
 section {
     display: flex;
     flex-direction: column;

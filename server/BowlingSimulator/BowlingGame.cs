@@ -1,89 +1,143 @@
-using System;
-using System.Collections.Generic;
 
 namespace BowlingSimulator
 {
     public class BowlingGame
     {
         private List<int> rolls = new List<int>();
-        private Random random = new();
-        public void Roll(int pins)
+        private Random random = new Random();
+
+        public void Roll(int pins) => rolls.Add(pins);
+
+        public void Reset() => rolls.Clear();
+
+        public int RollBall()
         {
-            rolls.Add(pins);
+            int maxPins = 10;
+            int ballCount = rolls.Count;
+            int round = 0;
+            int i = 0;
+
+          
+            while (i < ballCount && round < 9)
+            {
+                if (rolls[i] == 10) 
+                {
+                    i++;
+                    round++;
+                }
+                else
+                {
+                    if (i + 1 < ballCount)
+                    {
+                        i += 2;
+                        round++;
+                    }
+                    else
+                    {
+                        
+                        break;
+                    }
+                }
+            }
+
+            if (round < 9)
+            {
+
+                if (i < ballCount)
+                {
+                    maxPins = 10 - rolls[i];
+                }
+                else
+                {
+                    maxPins = 10;
+                }
+            }
+            else
+            {
+                
+                int rollsIn10th = ballCount - i; 
+                if (rollsIn10th == 0)
+                {
+                   
+                    maxPins = 10;
+                }
+                else if (rollsIn10th == 1)
+                {
+                    int firstBall = rolls[i];
+
+                    maxPins = firstBall == 10 ? 10 : 10 - firstBall;
+                }
+                else if (rollsIn10th == 2)
+                {
+                    int firstBall = rolls[i];
+                    int secondBall = rolls[i + 1];
+                    if (firstBall == 10)
+                    {
+                
+                        maxPins = 10;
+                    }
+                    else
+                    {
+   
+                        maxPins = (firstBall + secondBall == 10) ? 10 : 0;
+                    }
+                }
+                else
+                {
+            
+                    maxPins = 0;
+                }
+            }
+
+            int pins = random.Next(0, maxPins + 1);
+            Roll(pins);
+            return pins;
         }
 
-        public List<int> GetRolls()
-        {
-            return rolls;
-        }
+        public List<int> GetRolls() => new List<int>(rolls);
 
         public int CalculateScore()
         {
             int score = 0;
             int rollIndex = 0;
-
             for (int round = 0; round < 10; round++)
             {
-                if (rolls[rollIndex] == 10)
+                if (rollIndex >= rolls.Count)
+                    break;
+
+                if (round < 9)
                 {
-                    score += 10 + rolls[rollIndex + 1] + rolls[rollIndex + 2];
-                    rollIndex++;
-                }
-                else if (rolls[rollIndex] + rolls[rollIndex + 1] == 10)
-                {
-                    score += 10 + rolls[rollIndex + 2];
-                    rollIndex += 2;
+                    if (rolls[rollIndex] == 10) 
+                    {
+                        score += 10 + GetRoll(rollIndex + 1) + GetRoll(rollIndex + 2);
+                        rollIndex++;
+                    }
+                    else if (rolls[rollIndex] + GetRoll(rollIndex + 1) == 10) 
+                    {
+                        score += 10 + GetRoll(rollIndex + 2);
+                        rollIndex += 2;
+                    }
+                    else 
+                    {
+                        score += rolls[rollIndex] + GetRoll(rollIndex + 1);
+                        rollIndex += 2;
+                    }
                 }
                 else
                 {
-                    score += rolls[rollIndex] + rolls[rollIndex + 1];
-                    rollIndex += 2;
+
+                    while (rollIndex < rolls.Count)
+                    {
+                        score += rolls[rollIndex++];
+                    }
                 }
             }
             return score;
         }
 
-        public void SimulateGame()
+        private int GetRoll(int index)
         {
-            rolls.Clear();
-
-            for (int round = 0; round < 9; round++)
-            {
-                int firstRoll = random.Next(0, 11);
-
-                if (firstRoll == 10)
-                {
-                    Roll(firstRoll);
-                }
-                else
-                {
-                    int secondRoll = random.Next(0, 11 - firstRoll);
-                    Roll(firstRoll);
-                    Roll(secondRoll);
-                }
-            }
-
-            int lastRoundFirstRoll = random.Next(0, 11);
-            Roll(lastRoundFirstRoll);
-
-            if (lastRoundFirstRoll == 10)
-            {
-                int lastRoundSecondRoll = random.Next(0, 11);
-                Roll(lastRoundSecondRoll);
-                int lastRoundThirdRoll = random.Next(0, 11);
-                Roll(lastRoundThirdRoll);
-            }
-            else
-            {
-                int lastRoundSecondRoll = random.Next(0, 11 - lastRoundFirstRoll);
-                Roll(lastRoundSecondRoll);
-
-                if (lastRoundFirstRoll + lastRoundSecondRoll == 10)
-                {
-                    int lastRoundThirdRoll = random.Next(0, 11);
-                    Roll(lastRoundThirdRoll);
-                }
-            }
+            return index < rolls.Count ? rolls[index] : 0;
         }
     }
 }

@@ -3,11 +3,10 @@ using BowlingSimulator;
 var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
 
-BowlingGame game = new();
+BowlingGame game = new BowlingGame();
 
-app.MapPost("/api/bowling", () =>
+app.MapGet("/api/bowling", () =>
 {
-    game.SimulateGame();
     return Results.Ok(new
     {
         rolls = game.GetRolls(),
@@ -15,16 +14,21 @@ app.MapPost("/api/bowling", () =>
     });
 });
 
-
-
-app.MapGet("/api/bowling", () =>
+app.MapPost("/api/bowling/roll", () =>
 {
+    int pins = game.RollBall();
     return Results.Ok(new
     {
-        Rolls = game.GetRolls(),
+        pins,
+        rolls = game.GetRolls(),
         score = game.CalculateScore()
     });
 });
 
+app.MapPost("/api/bowling/reset", () =>
+{
+    game.Reset();
+    return Results.Ok(new { message = "Game reset" });
+});
 
 app.Run();
