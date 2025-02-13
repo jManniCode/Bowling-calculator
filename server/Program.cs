@@ -5,15 +5,6 @@ var app = builder.Build();
 
 BowlingGame game = new BowlingGame();
 
-app.MapGet("/api/bowling", () =>
-{
-    return Results.Ok(new
-    {
-        rolls = game.GetRolls(),
-        score = game.CalculateScore()
-    });
-});
-
 app.MapPost("/api/bowling/roll", () =>
 {
     int pins = game.RollBall();
@@ -21,6 +12,7 @@ app.MapPost("/api/bowling/roll", () =>
     {
         pins,
         rolls = game.GetRolls(),
+        scores = game.CalculateRoundScores(), // Returnerar uppdaterade rundpoäng
         score = game.CalculateScore()
     });
 });
@@ -28,7 +20,12 @@ app.MapPost("/api/bowling/roll", () =>
 app.MapPost("/api/bowling/reset", () =>
 {
     game.Reset();
-    return Results.Ok(new { message = "Game reset" });
+    return Results.Ok(new
+    {
+        rolls = game.GetRolls(),
+        scores = game.CalculateRoundScores(),
+        score = game.CalculateScore()
+    });
 });
 
 app.Run();
